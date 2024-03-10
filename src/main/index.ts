@@ -11,9 +11,13 @@ import icon from '../../resources/icon.png?asset'
 let mainWindow: BrowserWindow | null
 
 const options: BrowserWindowConstructorOptions = {
-  width: 1024,
-  height: 768,
+  width: 1280,
+  height: 960,
   show: false,
+  vibrancy: 'window',
+  resizable: false,
+  autoHideMenuBar: true,
+  titleBarStyle: 'hidden',
   ...(process.platform === 'linux' ? { icon } : {}),
   webPreferences: {
     preload: join(__dirname, '../preload/index.js'),

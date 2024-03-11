@@ -10,7 +10,20 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', ...defaultTheme.fontFamily.sans]
+        sans: ['Inter', ...defaultTheme.fontFamily.sans],
+        logo: ['Aclonica']
+      },
+      backgroundSize: {
+        'size-400': '400%'
+      },
+      animation: {
+        background: 'gradient 15s ease infinite'
+      },
+      keyframes: {
+        gradient: {
+          '0%, 100%': { 'background-position': '0% 50%' },
+          '50%': { 'background-position': '100% 50%' }
+        }
       }
     }
   },

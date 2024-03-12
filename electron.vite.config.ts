@@ -2,6 +2,12 @@ import { resolve } from 'path'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 import react from '@vitejs/plugin-react'
 
+const r = (dir: string) => resolve(__dirname, '.', dir)
+
+const alias: Record<string, string> = {
+  '@renderer': r('src/renderer')
+}
+
 export default defineConfig({
   main: {
     plugins: [externalizeDepsPlugin()]
@@ -11,10 +17,17 @@ export default defineConfig({
   },
   renderer: {
     resolve: {
-      alias: {
-        '@renderer': resolve('src/renderer')
-      }
+      alias
     },
-    plugins: [react()]
+    plugins: [react()],
+    server: {
+      proxy: {
+        '/api': {
+          target: 'http://localhost:8848/api/v1',
+          changeOrigin: true,
+          rewrite: path => path.replace(/^\/api/, '')
+        }
+      }
+    }
   }
 })

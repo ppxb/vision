@@ -55,8 +55,8 @@ const Layout = () => {
 
   return (
     <div className="flex h-screen">
-      <div className="flex top-1/2 transform -translate-y-1/2 fixed justify-center items-center px-4">
-        <div className="flex flex-col items-center gap-3 p-2 rounded-full bg-black/20 backdrop-blur backdrop-saturate-150">
+      <div className="flex top-1/2 transform -translate-y-1/2 fixed justify-center items-center px-4 z-50">
+        <div className="flex flex-col items-center gap-3 p-2 rounded-full bg-black/10 backdrop-blur-md backdrop-saturate-150">
           <Avatar
             size="sm"
             src="https://i.pravatar.cc/150?u=a04258114e29026702d"

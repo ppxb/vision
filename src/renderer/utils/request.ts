@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosRequestConfig } from 'axios'
 
 export const BASE_URL = '/api'
 
@@ -27,6 +27,17 @@ service.interceptors.response.use(
   }
 )
 
-export const get = (url: string, params?: any) => service.get(url, params)
-
-export const post = (url: string, data?: any) => service.post(url, data)
+export const request = async <T>(url: string, config?: AxiosRequestConfig) => {
+  try {
+    const response = await service.request<T>({
+      url,
+      ...config,
+      headers: {
+        ...config?.headers
+      }
+    })
+    return response as T
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}

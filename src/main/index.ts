@@ -8,6 +8,8 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
 
+import ipc from './ipc'
+
 let mainWindow: BrowserWindow | null
 
 const options: BrowserWindowConstructorOptions = {
@@ -77,9 +79,7 @@ const initApp = () => {
       // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils#optimizer
       // optimizer.registerFramelessWindowIpc()
 
-      // const win = createWindow()
-
-      // registerIpc(win)
+      ipc.register()
 
       createWindow()
 

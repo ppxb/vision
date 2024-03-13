@@ -1,16 +1,21 @@
 import { resolve } from 'path'
-import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
+import {
+  bytecodePlugin,
+  defineConfig,
+  externalizeDepsPlugin
+} from 'electron-vite'
 import react from '@vitejs/plugin-react'
 
 const r = (dir: string) => resolve(__dirname, '.', dir)
 
 const alias: Record<string, string> = {
-  '@renderer': r('src/renderer')
+  '@renderer': r('src/renderer'),
+  '@common': r('src/common')
 }
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin(), bytecodePlugin()]
   },
   preload: {
     plugins: [externalizeDepsPlugin()]
@@ -23,7 +28,7 @@ export default defineConfig({
     server: {
       proxy: {
         '/api': {
-          target: 'http://localhost:8848/api/v1',
+          target: 'http://localhost:8848',
           changeOrigin: true,
           rewrite: path => path.replace(/^\/api/, '')
         }

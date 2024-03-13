@@ -1,6 +1,25 @@
-import { get, BASE_URL, ALIYUN_BASE_URL } from '@renderer/utils/request'
+import { ContentTypeEnum, RequestEnum } from '@renderer/enums/http'
+import { BASE_URL, ALIYUN_BASE_URL, request } from '@renderer/utils/request'
 
-export const getQRCode = () => get(`${BASE_URL}/oauth/authorize/qrcode`)
+export const fetchQRCode = async () => {
+  return request<API.QRCodeRes>(`${BASE_URL}/oauth/authorize/qrcode`, {
+    method: RequestEnum.GET
+  })
+}
 
-export const checkQrCodeStatus = (sid: string) =>
-  get(`${ALIYUN_BASE_URL}/oauth/qrcode/${sid}/status`)
+export const fetchQRCodeStatus = (data: API.QRCodeStatusReq) => {
+  return request<API.QRCodeStatusRes>(
+    `${ALIYUN_BASE_URL}/oauth/qrcode/${data.sid}/status`,
+    { method: RequestEnum.GET }
+  )
+}
+
+export const fetchAccessToken = (data: API.AccessTokenReq) => {
+  return request<API.AccessTokenRes>(`${BASE_URL}/oauth/access_token`, {
+    method: RequestEnum.POST,
+    headers: {
+      'Content-Type': ContentTypeEnum.JSON
+    },
+    data
+  })
+}

@@ -1,28 +1,31 @@
-# vision
+# Vision
 
-An Electron application with React and TypeScript
+An Alipan third party desktop application with better experience.
 
-## Recommended IDE Setup
+## 👋🏻 WIP
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+![](./screenshots/login.png)
 
-## Project Setup
-
-### Install
+## ⚡️ Development
 
 ```bash
+$ git clone this repo
+$ cd the repo
 $ pnpm install
+$ pnpm dev -w
 ```
 
-### Development
+## 📦 Build
+
+> \[!IMPORTANT]
+>
+> No testing was carried out at this stage.
 
 ```bash
-$ pnpm dev
-```
+$ git clone this repo
+$ cd the repo
+$ pnpm install
 
-### Build
-
-```bash
 # For windows
 $ pnpm build:win
 
@@ -31,4 +34,9 @@ $ pnpm build:mac
 
 # For Linux
 $ pnpm build:linux
+
 ```
+
+## 📃 License
+
+MIT © [ppxb](./LICENSE)

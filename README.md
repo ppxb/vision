@@ -6,6 +6,14 @@ An Alipan third party desktop application with better experience.
 
 ![](./screenshots/login.png)
 
+## 👽 TODO
+
+- [ ] Recator code
+- [ ] Render folders and files
+- [ ] Video player
+- [ ] Settings view
+- [ ] Search files
+
 ## ⚡️ Development
 
 ```bash

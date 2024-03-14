@@ -10,6 +10,7 @@ interface State {
   showNavbar: boolean
   userInfo: APP.AppUserInfo
   spaceInfo: APP.AppSpaceInfo
+  driveId: string
 }
 
 interface Actions {
@@ -17,6 +18,7 @@ interface Actions {
   updateUserInfo: (info: APP.AppUserInfo) => void
   updateShowNavbar: (show: boolean) => void
   updateSpaceInfo: (info: APP.AppSpaceInfo) => void
+  updateDriveId: (id: string) => void
 }
 
 const initialState: State = {
@@ -46,7 +48,8 @@ const initialState: State = {
       total_size: 0
     }
   },
-  showNavbar: false
+  showNavbar: false,
+  driveId: ''
 }
 
 export const appStore = create<State & Actions>()(set => ({
@@ -57,7 +60,8 @@ export const appStore = create<State & Actions>()(set => ({
   },
   updateUserInfo: (info: APP.AppUserInfo) => set({ userInfo: info }),
   updateShowNavbar: (show: boolean) => set({ showNavbar: show }),
-  updateSpaceInfo: (info: APP.AppSpaceInfo) => set({ spaceInfo: info })
+  updateSpaceInfo: (info: APP.AppSpaceInfo) => set({ spaceInfo: info }),
+  updateDriveId: (id: string) => set({ driveId: id })
 }))
 
 export default createSelectors(appStore)

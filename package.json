@@ -25,6 +25,7 @@
     "@electron-toolkit/utils": "^3.0.0",
     "@nextui-org/react": "^2.2.10",
     "axios": "^1.6.7",
+    "dayjs": "^1.11.10",
     "electron-store": "^8.2.0",
     "electron-updater": "^6.1.7",
     "framer-motion": "^11.0.8",

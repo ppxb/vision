@@ -19,27 +19,30 @@ interface MenuItem {
   content?: string
   action?: () => void
   icon?: JSX.Element
+  path: string
 }
 
 const Layout = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { token, userInfo, showNavbar } = useAppStore()
+  const { userInfo, showNavbar } = useAppStore()
 
-  // TODO:HOMEVIEW SHOULD REPLACE PATH WHEN LOGINVIEW IS DISPLAY
   const menuItems: MenuItem[] = [
     {
       content: 'Home',
+      path: 'home',
       action: () => navigate('/home', { state: 'home' }),
       icon: <HomeIcon className="text-white/80" />
     },
     {
       content: 'Media',
+      path: 'media',
       action: () => navigate('/media', { state: 'media' }),
       icon: <MediaIcon className="text-white/80" />
     },
     {
       content: 'File Source',
+      path: 'source',
       action: () => navigate('/source', { state: 'source' }),
       icon: <SourceIcon className="text-white/80" />
     },
@@ -50,11 +53,13 @@ const Layout = () => {
     // },
     {
       content: 'About',
+      path: 'about',
       action: () => navigate('/about'),
       icon: <AboutIcon className="text-white/80" />
     },
     {
       content: 'Settings',
+      path: 'settings',
       action: () => navigate('/settings', { state: 'settings' }),
       icon: <SettingsIcon className="text-white/80" />
     }
@@ -89,7 +94,7 @@ const Layout = () => {
                   radius="full"
                   onPress={menu.action}
                   className={
-                    location.state === menu.content?.toLocaleLowerCase()
+                    location.pathname.indexOf(menu.path) > 0
                       ? 'bg-default/40'
                       : ''
                   }

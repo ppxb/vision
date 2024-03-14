@@ -1,19 +1,25 @@
-import {
-  Avatar,
-  Progress,
-  Select,
-  SelectItem,
-  SelectedItems
-} from '@nextui-org/react'
+import { ChangeEvent, useEffect, useState } from 'react'
+import { Outlet, useNavigate } from 'react-router-dom'
+import { Progress, Select, SelectItem, SelectedItems } from '@nextui-org/react'
 
 import { convertBytesToGigabytes } from '@renderer/utils'
 import useAppStore from '@renderer/store'
-import { MediaIcon } from '@renderer/components/icon'
+import { SpaceBackupIcon, SpaceResourceIcon } from '@renderer/components/icon'
 
 const HomeView = () => {
-  const { token, userInfo, spaceInfo } = useAppStore()
-  console.log(token.access_token)
-  console.log(spaceInfo)
+  const navigate = useNavigate()
+  const { token, userInfo, spaceInfo, driveId } = useAppStore()
+  const [space, setSpace] = useState('备份盘')
+  const updateDriveId = useAppStore.use.updateDriveId()
+  // console.log(userInfo)
+  // console.log(token)
+
+  useEffect(() => {
+    updateDriveId(userInfo.default_drive_id)
+    navigate(`/home/file/${driveId}`, {
+      state: { id: 'root' }
+    })
+  }, [])
 
   const spaceUsedProgressLabel = () => {
     return `${convertBytesToGigabytes(
@@ -25,113 +31,104 @@ const HomeView = () => {
     )} GB (已使用 ${((spaceInfo.personal_space_info.used_size / spaceInfo.personal_space_info.total_size) * 100).toFixed(2)}%)`
   }
 
-  type User = {
-    id: number
-    name: string
-    role: string
-    team: string
-    status: string
-    age: string
-    avatar: string
-    email: string
-  }
-  const users = [
+  const items: APP.AppSpaceItem[] = [
     {
-      id: 1,
-      name: 'Tony Reichert',
-      role: 'CEO',
-      team: 'Management',
-      status: 'active',
-      age: '29',
-      avatar: 'https://d2u8k2ocievbld.cloudfront.net/memojis/male/1.png',
-      email: 'tony.reichert@example.com'
+      id: userInfo.backup_drive_id,
+      name: '备份盘',
+      icon: <SpaceBackupIcon />
     },
     {
-      id: 2,
-      name: 'Zoey Lang',
-      role: 'Tech Lead',
-      team: 'Development',
-      status: 'paused',
-      age: '25',
-      avatar: 'https://d2u8k2ocievbld.cloudfront.net/memojis/female/1.png',
-      email: 'zoey.lang@example.com'
+      id: userInfo.resource_drive_id,
+      name: '资源盘',
+      icon: <SpaceResourceIcon />
     }
   ]
+
+  const handleSpaceChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    if (e.target.value) {
+      setSpace(e.target.value)
+      const selectedItem = items.filter(item => item.name === e.target.value)
+      updateDriveId(selectedItem[0].id)
+    }
+  }
 
   // TODO: The progress bar should be split into individual components for easier maintenance
   // TODO: The logo should be used in all views
   return (
     <div className="h-full flex flex-col gap-4 pt-12 pl-28 pr-16 pb-8">
       <div className="font-logo text-background text-3xl">Vision</div>
-      <div className="flex flex-col flex-grow bg-black/10 backdrop-blur-md backdrop-saturate-150 p-12 rounded-3xl">
+      <div className="flex flex-col flex-grow bg-black/10 backdrop-blur-md backdrop-saturate-150 p-8 rounded-3xl">
         <div className="flex items-center justify-between">
           <div className="text-4xl font-bold text-background/90">备份盘</div>
           <Select
-            items={users}
+            items={items}
             placeholder="选择一个阿里云盘空间"
+            aria-label="阿里云盘空间"
+            selectedKeys={[space]}
+            onChange={handleSpaceChange}
             classNames={{
-              base: 'max-w-[200px] border-none',
-              label: '!text-background/80',
-              trigger:
-                'h-12 bg-black/10 backdrop-blur-md backdrop-saturate-150 data-[hover=true]:bg-black/20',
-              selectorIcon: 'text-background/80',
-              popoverContent: 'bg-black/10 backdrop-blur-md'
+              base: 'max-w-[160px] border-none',
+              trigger: 'h-12 bg-black/10 data-[hover=true]:bg-black/20',
+              selectorIcon: 'text-background/70',
+              popoverContent: 'bg-black/10'
             }}
-            renderValue={(items: SelectedItems<User>) => {
+            renderValue={(items: SelectedItems<APP.AppSpaceItem>) => {
               return items.map(item => (
-                <div key={item.key} className="flex items-center gap-2 ">
-                  <MediaIcon className="text-background/80 flex-shrink-0" />
-                  <div className="text-background/80">{item.data.name}</div>
+                <div
+                  key={item.data?.name}
+                  className="flex text-background/70 items-center gap-2 "
+                >
+                  <div className="flex-shrink-0">{item.data?.icon}</div>
+                  {item.data?.name}
                 </div>
               ))
             }}
           >
-            {user => (
+            {space => (
               <SelectItem
-                key={user.id}
-                textValue={user.name}
+                key={space.name}
+                textValue={space.name}
                 classNames={{
-                  base: 'data-[hover=true]:bg-black/20'
+                  base: 'text-background/70'
                 }}
               >
                 <div className="flex gap-2 items-center">
-                  <Avatar
-                    alt={user.name}
-                    className="flex-shrink-0"
-                    size="sm"
-                    src={user.avatar}
-                  />
-                  <div className="text-small">{user.name}</div>
+                  {space.icon}
+                  <div className="text-small">{space.name}</div>
                 </div>
               </SelectItem>
             )}
           </Select>
         </div>
+        <div className="flex flex-grow pt-4">
+          <Outlet />
+        </div>
       </div>
-      <div className="flex flex-col gap-2 bg-black/10 backdrop-blur-md backdrop-saturate-150 p-4 rounded-3xl">
-        <Progress
-          label={spaceUsedProgressLabel()}
-          size="sm"
-          value={
-            (spaceInfo.personal_space_info.used_size /
-              spaceInfo.personal_space_info.total_size) *
-            100
-          }
-          className="max-w"
-          classNames={{
-            label: 'text-background/70',
-            track: 'bg-background/10',
-            indicator: '!bg-green-500'
-          }}
-        />
-        <div className="flex gap-8">
-          <div className="flex gap-2 items-center">
-            <div className="bg-green-500 rounded-full w-[6px] h-[6px]"></div>
-            <div className="text-sm text-background/70">已使用</div>
-          </div>
-          <div className="flex gap-2 items-center">
-            <div className="bg-background/10 rounded-full w-[6px] h-[6px]"></div>
-            <div className="text-sm text-background/70">未使用</div>
+      <div className="flex">
+        <div className="flex flex-col gap-2 bg-black/10 backdrop-blur-md backdrop-saturate-150 p-4 rounded-3xl">
+          <Progress
+            label={spaceUsedProgressLabel()}
+            size="sm"
+            value={
+              (spaceInfo.personal_space_info.used_size /
+                spaceInfo.personal_space_info.total_size) *
+              100
+            }
+            className="w-[320px]"
+            classNames={{
+              label: 'text-background/70',
+              indicator: '!bg-green-500'
+            }}
+          />
+          <div className="flex gap-8">
+            <div className="flex gap-2 items-center">
+              <div className="bg-green-500 rounded-full w-[6px] h-[6px]"></div>
+              <div className="text-sm text-background/70">已使用</div>
+            </div>
+            <div className="flex gap-2 items-center">
+              <div className="bg-default-300/50 rounded-full w-[6px] h-[6px]"></div>
+              <div className="text-sm text-background/70">未使用</div>
+            </div>
           </div>
         </div>
       </div>

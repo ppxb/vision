@@ -1,5 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios'
 
+import { appStore } from '@renderer/store'
+
 export const BASE_URL = '/api'
 
 export const ALIYUN_BASE_URL = 'https://openapi.alipan.com'
@@ -12,6 +14,10 @@ const service = axios.create({
 
 service.interceptors.request.use(
   config => {
+    const token = appStore.getState().token.access_token
+    if (token && config.headers) {
+      config.headers.Authorization = token
+    }
     return config
   },
   error => Promise.reject(error)

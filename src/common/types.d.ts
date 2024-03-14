@@ -25,6 +25,22 @@ declare namespace API {
     refresh_token: string
     expires_in: number
   }
+
+  type UserInfoRes = {
+    user_id: string
+    name: string
+    avatar: string
+    default_drive_id: string
+    resource_drive_id: string
+    backup_drive_id: string
+  }
+
+  type SpaceInfoRes = {
+    personal_space_info: {
+      used_size: number
+      total_size: number
+    }
+  }
 }
 
 declare namespace APP {
@@ -37,5 +53,21 @@ declare namespace APP {
     access_token: string
     refresh_token: string
     expires_in: number
+  }
+
+  type AppUserInfo = {
+    user_id: string
+    name: string
+    avatar: string
+    default_drive_id: string
+    resource_drive_id: string
+    backup_drive_id: string
+  }
+
+  type AppSpaceInfo = {
+    personal_space_info: {
+      used_size: number
+      total_size: number
+    }
   }
 }

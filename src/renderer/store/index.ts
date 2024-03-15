@@ -11,6 +11,7 @@ interface State {
   userInfo: APP.AppUserInfo
   spaceInfo: APP.AppSpaceInfo
   driveId: string
+  breadcrumb: APP.AppBreadcrumbItem[]
 }
 
 interface Actions {
@@ -19,6 +20,7 @@ interface Actions {
   updateShowNavbar: (show: boolean) => void
   updateSpaceInfo: (info: APP.AppSpaceInfo) => void
   updateDriveId: (id: string) => void
+  updateBreadcrumb: (breadcrumb: APP.AppBreadcrumbItem[]) => void
 }
 
 const initialState: State = {
@@ -49,7 +51,8 @@ const initialState: State = {
     }
   },
   showNavbar: false,
-  driveId: ''
+  driveId: '',
+  breadcrumb: []
 }
 
 export const appStore = create<State & Actions>()(set => ({
@@ -61,7 +64,8 @@ export const appStore = create<State & Actions>()(set => ({
   updateUserInfo: (info: APP.AppUserInfo) => set({ userInfo: info }),
   updateShowNavbar: (show: boolean) => set({ showNavbar: show }),
   updateSpaceInfo: (info: APP.AppSpaceInfo) => set({ spaceInfo: info }),
-  updateDriveId: (id: string) => set({ driveId: id })
+  updateDriveId: (id: string) => set({ driveId: id }),
+  updateBreadcrumb: (breadcrumb: APP.AppBreadcrumbItem[]) => set({ breadcrumb })
 }))
 
 export default createSelectors(appStore)

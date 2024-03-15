@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
 
 import useAppStore from '@renderer/store'
@@ -7,23 +6,32 @@ import { fetchFileList } from '@renderer/utils/file'
 import { FolderIcon, PlayIcon } from '@renderer/components/icon'
 import { Tooltip } from '@nextui-org/react'
 
-const Folder = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const { driveId } = useAppStore()
+const File = () => {
+  const { breadcrumb } = useAppStore()
   const [files, setFiles] = useState<API.FileListRes>()
 
+  const updateBreadcrumb = useAppStore.use.updateBreadcrumb()
+
   const handleFileClick = (file: APP.AppFile) => {
-    navigate(`/home/file/${file.file_id}`)
+    updateBreadcrumb([
+      ...breadcrumb,
+      {
+        name: file.name,
+        drive_id: file.drive_id,
+        parent_file_id: file.file_id
+      }
+    ])
   }
 
   useEffect(() => {
+    if (breadcrumb.length === 0) return
+
+    const current = breadcrumb.at(-1)
     const requestFileList = async () => {
       try {
         const data = await fetchFileList({
-          drive_id: driveId,
-          parent_file_id:
-            location.state?.id || location.pathname.split('/').at(-1)!,
+          drive_id: current?.drive_id,
+          parent_file_id: current?.parent_file_id,
           fields: '*',
           order_by: 'name',
           order_direction: 'ASC'
@@ -34,18 +42,18 @@ const Folder = () => {
       }
     }
     requestFileList()
-  }, [location])
+  }, [breadcrumb])
 
   return (
     // TODO: should fix the max height
     <div className="w-full max-h-[590px] flex flex-col overflow-hidden">
-      <div className="text-background/70 text-sm mb-8">
-        共 {files?.items.length} 个文件
+      <div className="text-white/70 text-sm font-medium mb-8">
+        共 {files?.items.length} 项
       </div>
       <div className="grid grid-cols-6 gap-x-4 gap-y-6 overflow-y-auto">
         {files?.items.map(file => (
           <div
-            className="flex flex-col col-span-1 items-center justify-center"
+            className="flex flex-col col-span-1 items-center justify-center hover:cursor-pointer"
             key={file.file_id}
             onClick={() => handleFileClick(file)}
           >
@@ -64,12 +72,19 @@ const Folder = () => {
             ) : (
               <FolderIcon />
             )}
-            <Tooltip content={file.name} closeDelay={0}>
-              <div className="w-32 text-center text-default-100 text-sm mb-1 truncate">
+            <Tooltip
+              content={file.name}
+              delay={800}
+              closeDelay={0}
+              classNames={{
+                content: 'text-tiny'
+              }}
+            >
+              <div className="w-32 text-center text-white text-sm font-medium mb-1 truncate">
                 {file.name}
               </div>
             </Tooltip>
-            <div className="text-default-100/70 text-tiny">
+            <div className="text-white/70 text-tiny">
               {dayjs(file.updated_at).format('YYYY-MM-DD HH:ss:mm')}
             </div>
           </div>
@@ -79,4 +94,4 @@ const Folder = () => {
   )
 }
 
-export default Folder
+export default File

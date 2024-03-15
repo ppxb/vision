@@ -8,12 +8,13 @@
 
 ## 👋🏻 WIP
 
-![](./screenshots/login.png)
+![](./screenshots/main.png)
 
 ## 👽 TODO
 
 - [ ] Refator code
 - [x] Render folders and files
+- [x] Breadcrumb component
 - [ ] Media view
 - [ ] Media player (include video and music)
 - [ ] Settings view

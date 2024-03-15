@@ -58,12 +58,12 @@ declare namespace API {
     | 'image'
 
   type FileListReq = {
-    drive_id: string
+    drive_id: string | undefined
     limit?: number
     marker?: string
     order_by?: FileListReqOrderBy
     order_direction?: 'DESC' | 'ASC'
-    parent_file_id: string
+    parent_file_id: string | undefined
     category?: FileListReqCategory
     type?: 'all' | 'file' | 'folder'
     video_thumbnail_time?: number
@@ -129,5 +129,11 @@ declare namespace APP {
     play_cursor?: string
     video_media_metadata?: object
     video_preview_metadata?: object
+  }
+
+  type AppBreadcrumbItem = {
+    drive_id: string
+    name: string
+    parent_file_id?: string
   }
 }

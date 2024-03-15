@@ -1,35 +1,34 @@
 import { ChangeEvent, useEffect, useState } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
-import { Progress, Select, SelectItem, SelectedItems } from '@nextui-org/react'
+import {
+  BreadcrumbItem,
+  Breadcrumbs,
+  Select,
+  SelectItem,
+  SelectedItems
+} from '@nextui-org/react'
 
-import { convertBytesToGigabytes } from '@renderer/utils'
+import File from '@renderer/components/file'
 import useAppStore from '@renderer/store'
 import { SpaceBackupIcon, SpaceResourceIcon } from '@renderer/components/icon'
+import BottomStatus from '@renderer/components/BottomStatus'
 
 const HomeView = () => {
-  const navigate = useNavigate()
-  const { token, userInfo, spaceInfo, driveId } = useAppStore()
+  const { userInfo, spaceInfo, breadcrumb } = useAppStore()
   const [space, setSpace] = useState('备份盘')
+
   const updateDriveId = useAppStore.use.updateDriveId()
-  // console.log(userInfo)
-  // console.log(token)
+  const updateBreadcrumb = useAppStore.use.updateBreadcrumb()
 
   useEffect(() => {
     updateDriveId(userInfo.default_drive_id)
-    navigate(`/home/file/${driveId}`, {
-      state: { id: 'root' }
-    })
+    updateBreadcrumb([
+      {
+        drive_id: userInfo.backup_drive_id,
+        name: '备份盘',
+        parent_file_id: 'root'
+      }
+    ])
   }, [])
-
-  const spaceUsedProgressLabel = () => {
-    return `${convertBytesToGigabytes(
-      spaceInfo.personal_space_info.used_size
-    ).toFixed(2)} GB / ${convertBytesToGigabytes(
-      spaceInfo.personal_space_info.total_size
-    ).toFixed(
-      2
-    )} GB (已使用 ${((spaceInfo.personal_space_info.used_size / spaceInfo.personal_space_info.total_size) * 100).toFixed(2)}%)`
-  }
 
   const items: APP.AppSpaceItem[] = [
     {
@@ -48,18 +47,46 @@ const HomeView = () => {
     if (e.target.value) {
       setSpace(e.target.value)
       const selectedItem = items.filter(item => item.name === e.target.value)
-      updateDriveId(selectedItem[0].id)
+      updateBreadcrumb([
+        {
+          drive_id: selectedItem[0].id,
+          name: selectedItem[0].name,
+          parent_file_id: 'root'
+        }
+      ])
     }
+  }
+
+  const handleBreadcrumbPress = e => {
+    const index = breadcrumb.findIndex(b => b.name === e.target.dataset.value)
+    updateBreadcrumb([...breadcrumb.slice(0, index + 1)])
   }
 
   // TODO: The progress bar should be split into individual components for easier maintenance
   // TODO: The logo should be used in all views
   return (
-    <div className="h-full flex flex-col gap-4 pt-12 pl-28 pr-16 pb-8">
+    <div className="h-full flex flex-col gap-4 pt-10 pl-24 pr-8 pb-8">
       <div className="font-logo text-background text-3xl">Vision</div>
       <div className="flex flex-col flex-grow bg-black/10 backdrop-blur-md backdrop-saturate-150 p-8 rounded-3xl">
         <div className="flex items-center justify-between">
-          <div className="text-4xl font-bold text-background/90">备份盘</div>
+          <Breadcrumbs
+            underline="hover"
+            itemClasses={{
+              separator: 'px-2 text-white/30',
+              item: 'text-white/70 text-2xl font-semibold data-[current=true]:text-white'
+            }}
+          >
+            {breadcrumb.map(b => (
+              // BUG: use a hack way to resolve tailwind truncate don't work
+              <BreadcrumbItem
+                key={b.name}
+                onPress={handleBreadcrumbPress}
+                data-value={b.name}
+              >
+                {b.name.length > 16 ? b.name.slice(0, 16) + '...' : b.name}
+              </BreadcrumbItem>
+            ))}
+          </Breadcrumbs>
           <Select
             items={items}
             placeholder="选择一个阿里云盘空间"
@@ -101,37 +128,10 @@ const HomeView = () => {
           </Select>
         </div>
         <div className="flex flex-grow pt-4">
-          <Outlet />
+          <File />
         </div>
       </div>
-      <div className="flex">
-        <div className="flex flex-col gap-2 bg-black/10 backdrop-blur-md backdrop-saturate-150 p-4 rounded-3xl">
-          <Progress
-            label={spaceUsedProgressLabel()}
-            size="sm"
-            value={
-              (spaceInfo.personal_space_info.used_size /
-                spaceInfo.personal_space_info.total_size) *
-              100
-            }
-            className="w-[320px]"
-            classNames={{
-              label: 'text-background/70',
-              indicator: '!bg-green-500'
-            }}
-          />
-          <div className="flex gap-8">
-            <div className="flex gap-2 items-center">
-              <div className="bg-green-500 rounded-full w-[6px] h-[6px]"></div>
-              <div className="text-sm text-background/70">已使用</div>
-            </div>
-            <div className="flex gap-2 items-center">
-              <div className="bg-default-300/50 rounded-full w-[6px] h-[6px]"></div>
-              <div className="text-sm text-background/70">未使用</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <BottomStatus spaceInfo={spaceInfo} />
     </div>
   )
 }

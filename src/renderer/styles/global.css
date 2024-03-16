@@ -9,6 +9,7 @@
 * {
   user-select: none;
   scroll-behavior: smooth;
+  outline: none;
 }
 
 ::-webkit-scrollbar {

@@ -27,8 +27,7 @@ const AppBottomStatus = ({ spaceInfo }: Props) => {
               spaceInfo.personal_space_info.total_size) *
             100
           }
-          className="w-[240px]"
-          classNames={{ indicator: '!bg-green-500' }}
+          classNames={{ indicator: '!bg-green-500 w-[256px]' }}
         />
         <div className="flex gap-4">
           <div className="flex gap-2 items-center">

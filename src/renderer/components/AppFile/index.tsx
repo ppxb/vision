@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
+import { Tooltip } from '@nextui-org/react'
 import dayjs from 'dayjs'
 
 import { fetchFileList } from '@renderer/utils/file'
 import { FolderIcon, PlayIcon } from '@renderer/components/AppIcon'
-import { Tooltip } from '@nextui-org/react'
+import ImageLoader from '@renderer/components/ImageLoader'
 
 interface Props {
   breadcrumb: APP.AppBreadcrumbItem[]
@@ -62,12 +63,7 @@ const AppFile = ({ breadcrumb, setBreadcrumb }: Props) => {
           >
             {file.thumbnail ? (
               <div className="relative">
-                {/* TODO: fix image rendering placeholder */}
-                <img
-                  className="scale-[0.7] object-cover h-[100px] rounded-xl"
-                  src={file.thumbnail}
-                  referrerPolicy="no-referrer"
-                />
+                <ImageLoader src={file.thumbnail} />
                 <div className="absolute top-[38px] left-[68px] flex items-center justify-center p-[10px] rounded-full bg-black/70 backdrop-blur-md">
                   <PlayIcon className="text-white" />
                 </div>

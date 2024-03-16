@@ -15,6 +15,8 @@
 - [ ] Refator code
 - [x] Render folders and files
 - [x] Breadcrumb component
+- [x] Image loader component
+- [x] Refresh token retry
 - [ ] Media view
 - [ ] Media player (include video and music)
 - [ ] Settings view

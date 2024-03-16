@@ -3,7 +3,7 @@ import { Tooltip } from '@nextui-org/react'
 import dayjs from 'dayjs'
 
 import { fetchFileList } from '@renderer/utils/file'
-import { FolderIcon, PlayIcon } from '@renderer/components/AppIcon'
+import { FolderIcon } from '@renderer/components/AppIcon'
 import ImageLoader from '@renderer/components/ImageLoader'
 
 interface Props {
@@ -61,13 +61,9 @@ const AppFile = ({ breadcrumb, setBreadcrumb }: Props) => {
             key={file.file_id}
             onClick={() => handleFileClick(file)}
           >
+            {/* TODO: should show different file extension icon here */}
             {file.thumbnail ? (
-              <div className="relative">
-                <ImageLoader src={file.thumbnail} />
-                <div className="absolute top-[38px] left-[68px] flex items-center justify-center p-[10px] rounded-full bg-black/70 backdrop-blur-md">
-                  <PlayIcon className="text-white" />
-                </div>
-              </div>
+              <ImageLoader src={file.thumbnail} />
             ) : (
               <FolderIcon />
             )}

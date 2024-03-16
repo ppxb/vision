@@ -50,8 +50,8 @@ const AppFile = ({ breadcrumb, setBreadcrumb }: Props) => {
 
   return (
     // TODO: should fix the max height
-    <div className="w-full max-h-[590px] flex flex-col overflow-hidden">
-      <div className="text-white/70 text-sm font-medium mb-8">
+    <div className="w-full max-h-[640px] flex flex-col overflow-hidden">
+      <div className="text-white/70 text-sm font-medium mt-4 mb-8">
         共 {files?.items.length} 项
       </div>
       <div className="grid grid-cols-6 gap-x-4 gap-y-6 overflow-y-auto">

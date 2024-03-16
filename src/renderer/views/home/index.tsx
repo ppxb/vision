@@ -65,12 +65,11 @@ const HomeView = () => {
     setBreadcrumb([...breadcrumb.slice(0, index + 1)])
   }
 
-  // TODO: The progress bar should be split into individual components for easier maintenance
   // TODO: The logo should be used in all views
   return (
     <div className="h-full flex flex-col gap-4 pt-10 pl-24 pr-8 pb-8">
       <div className="font-logo text-background text-3xl">Vision</div>
-      <div className="flex flex-col flex-grow bg-black/10 backdrop-blur-md backdrop-saturate-150 p-8 rounded-3xl">
+      <div className="flex flex-col flex-grow bg-black/10 backdrop-blur-md backdrop-saturate-150 p-8 pb-0 rounded-3xl">
         <div className="flex items-center justify-between">
           <Breadcrumbs
             underline="hover"
@@ -130,7 +129,7 @@ const HomeView = () => {
             )}
           </Select>
         </div>
-        <div className="flex flex-grow pt-4">
+        <div className="flex flex-grow">
           <AppFile breadcrumb={breadcrumb} setBreadcrumb={setBreadcrumb} />
         </div>
       </div>

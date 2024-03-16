@@ -1,6 +1,6 @@
 import { PropsWithChildren, useEffect, useRef } from 'react'
 
-import Gradient from './Gradient'
+import Gradient from '@renderer/components/Zenitho/Gradient'
 
 const Zenitho = ({ children }: PropsWithChildren) => {
   const ctnDom = useRef<HTMLDivElement>(null)

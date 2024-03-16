@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
-import { IpcEvents } from '@common/ipcEvents'
 import createSelectors from './selector'
+import { IpcEvents } from '@common/ipcEvents'
 
 const { ipcRenderer } = window.electron
 
@@ -14,27 +14,23 @@ interface State {
   breadcrumb: APP.AppBreadcrumbItem[]
 }
 
-interface Actions {
+interface Action {
   updateToken: (token: APP.AppToken) => void
-  updateUserInfo: (info: APP.AppUserInfo) => void
+  updateUserInfo: (user: APP.AppUserInfo) => void
   updateShowNavbar: (show: boolean) => void
   updateSpaceInfo: (info: APP.AppSpaceInfo) => void
   updateDriveId: (id: string) => void
   updateBreadcrumb: (breadcrumb: APP.AppBreadcrumbItem[]) => void
+  getUser: () => void
 }
 
 const initialState: State = {
-  // token: (await ipcRenderer.invoke(IpcEvents.GET_TOKEN)) || {
-  //   token_type: '',
-  //   access_token: '',
-  //   refresh_token: '',
-  //   expires_in: 0
-  // }
-  token: {
+  token: (await ipcRenderer.invoke(IpcEvents.GET_TOKEN)) || {
     token_type: '',
     access_token: '',
     refresh_token: '',
-    expires_in: 0
+    expires_in: 0,
+    refresh_token_created_at: 0
   },
   userInfo: {
     user_id: '',
@@ -55,17 +51,19 @@ const initialState: State = {
   breadcrumb: []
 }
 
-export const appStore = create<State & Actions>()(set => ({
+export const appStore = create<State & Action>()((set, get) => ({
   ...initialState,
   updateToken: (token: APP.AppToken) => {
     set({ token })
     ipcRenderer.send(IpcEvents.SET_TOKEN, token)
   },
-  updateUserInfo: (info: APP.AppUserInfo) => set({ userInfo: info }),
+  updateUserInfo: (user: APP.AppUserInfo) => set(() => ({ userInfo: user })),
   updateShowNavbar: (show: boolean) => set({ showNavbar: show }),
   updateSpaceInfo: (info: APP.AppSpaceInfo) => set({ spaceInfo: info }),
   updateDriveId: (id: string) => set({ driveId: id }),
-  updateBreadcrumb: (breadcrumb: APP.AppBreadcrumbItem[]) => set({ breadcrumb })
+  updateBreadcrumb: (breadcrumb: APP.AppBreadcrumbItem[]) =>
+    set({ breadcrumb }),
+  getUser: () => get().userInfo
 }))
 
 export default createSelectors(appStore)

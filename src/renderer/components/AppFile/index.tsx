@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 
-import useAppStore from '@renderer/store'
 import { fetchFileList } from '@renderer/utils/file'
-import { FolderIcon, PlayIcon } from '@renderer/components/icon'
+import { FolderIcon, PlayIcon } from '@renderer/components/AppIcon'
 import { Tooltip } from '@nextui-org/react'
 
-const File = () => {
-  const { breadcrumb } = useAppStore()
+interface Props {
+  breadcrumb: APP.AppBreadcrumbItem[]
+  setBreadcrumb: React.Dispatch<React.SetStateAction<APP.AppBreadcrumbItem[]>>
+}
+
+const AppFile = ({ breadcrumb, setBreadcrumb }: Props) => {
   const [files, setFiles] = useState<API.FileListRes>()
 
-  const updateBreadcrumb = useAppStore.use.updateBreadcrumb()
-
   const handleFileClick = (file: APP.AppFile) => {
-    updateBreadcrumb([
+    setBreadcrumb([
       ...breadcrumb,
       {
         name: file.name,
@@ -41,7 +42,9 @@ const File = () => {
         return Promise.reject(error)
       }
     }
-    requestFileList()
+    if (current?.drive_id) {
+      requestFileList()
+    }
   }, [breadcrumb])
 
   return (
@@ -94,4 +97,4 @@ const File = () => {
   )
 }
 
-export default File
+export default AppFile

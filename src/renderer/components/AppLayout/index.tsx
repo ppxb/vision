@@ -3,8 +3,8 @@ import { useLocation } from 'react-router-dom'
 import { Avatar, Button, Tooltip } from '@nextui-org/react'
 import { motion } from 'framer-motion'
 
-import Zenitho from '@renderer/components/zenitho'
 import useAppStore from '@renderer/store'
+import Zenitho from '@renderer/components/Zenitho'
 
 import {
   AboutIcon,
@@ -12,8 +12,8 @@ import {
   MediaIcon,
   // ServerIcon,
   SettingsIcon,
-  SourceIcon
-} from '@renderer/components/icon'
+  MusicIcon
+} from '@renderer/components/AppIcon'
 
 interface MenuItem {
   content?: string
@@ -22,46 +22,46 @@ interface MenuItem {
   path: string
 }
 
-const Layout = () => {
+const AppLayout = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { userInfo, showNavbar } = useAppStore()
 
   const menuItems: MenuItem[] = [
     {
-      content: 'Home',
-      path: 'home',
-      action: () => navigate('/home', { state: 'home' }),
-      icon: <HomeIcon className="text-white/80" />
+      content: '主页',
+      path: '/',
+      action: () => navigate('/'),
+      icon: <HomeIcon className="text-white/70" />
     },
     {
-      content: 'Media',
-      path: 'media',
-      action: () => navigate('/media', { state: 'media' }),
-      icon: <MediaIcon className="text-white/80" />
+      content: '媒体',
+      path: '/media',
+      action: () => navigate('/media'),
+      icon: <MediaIcon className="text-white/70" />
     },
     {
-      content: 'File Source',
-      path: 'source',
-      action: () => navigate('/source', { state: 'source' }),
-      icon: <SourceIcon className="text-white/80" />
+      content: '音乐',
+      path: '/music',
+      action: () => navigate('/source'),
+      icon: <MusicIcon className="text-white/70" />
     },
     // {
     //   content: 'Server',
     //   action: () => navigate('/server'),
-    //   icon: <ServerIcon className="text-white/80" />
+    //   icon: <ServerIcon className="text-white/70" />
     // },
     {
-      content: 'About',
-      path: 'about',
+      content: '关于',
+      path: '/about',
       action: () => navigate('/about'),
-      icon: <AboutIcon className="text-white/80" />
+      icon: <AboutIcon className="text-white/70" />
     },
     {
-      content: 'Settings',
-      path: 'settings',
-      action: () => navigate('/settings', { state: 'settings' }),
-      icon: <SettingsIcon className="text-white/80" />
+      content: '设置',
+      path: '/settings',
+      action: () => navigate('/settings'),
+      icon: <SettingsIcon className="text-white/70" />
     }
   ]
 
@@ -94,9 +94,7 @@ const Layout = () => {
                   radius="full"
                   onPress={menu.action}
                   className={
-                    location.pathname.indexOf(menu.path) > 0
-                      ? 'bg-default/40'
-                      : ''
+                    location.pathname === menu.path ? 'bg-default/40' : ''
                   }
                 >
                   {menu.icon}
@@ -113,4 +111,4 @@ const Layout = () => {
   )
 }
 
-export default Layout
+export default AppLayout

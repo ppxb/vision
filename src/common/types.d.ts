@@ -88,6 +88,7 @@ declare namespace APP {
     access_token: string
     refresh_token: string
     expires_in: number
+    refresh_token_created_at: number
   }
 
   type AppUserInfo = {

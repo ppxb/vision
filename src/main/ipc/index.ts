@@ -11,6 +11,10 @@ const register = () => {
   ipcMain.handle(IpcEvents.GET_TOKEN, () => {
     return store.get('config').token
   })
+
+  ipcMain.on(IpcEvents.CLEAR_STORE, () => {
+    store.clear()
+  })
 }
 
 export default { register }

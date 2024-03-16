@@ -7,28 +7,31 @@ import {
   SelectedItems
 } from '@nextui-org/react'
 
-import File from '@renderer/components/file'
 import useAppStore from '@renderer/store'
-import { SpaceBackupIcon, SpaceResourceIcon } from '@renderer/components/icon'
-import BottomStatus from '@renderer/components/BottomStatus'
+import AppFile from '@renderer/components/AppFile'
+import AppBottomStatus from '@renderer/components/AppBottomStatus'
+import {
+  SpaceBackupIcon,
+  SpaceResourceIcon
+} from '@renderer/components/AppIcon'
 
 const HomeView = () => {
-  const { userInfo, spaceInfo, breadcrumb } = useAppStore()
+  const { userInfo, spaceInfo } = useAppStore()
   const [space, setSpace] = useState('备份盘')
+  const [breadcrumb, setBreadcrumb] = useState<APP.AppBreadcrumbItem[]>([])
 
   const updateDriveId = useAppStore.use.updateDriveId()
-  const updateBreadcrumb = useAppStore.use.updateBreadcrumb()
 
   useEffect(() => {
     updateDriveId(userInfo.default_drive_id)
-    updateBreadcrumb([
+    setBreadcrumb([
       {
         drive_id: userInfo.backup_drive_id,
         name: '备份盘',
         parent_file_id: 'root'
       }
     ])
-  }, [])
+  }, [userInfo])
 
   const items: APP.AppSpaceItem[] = [
     {
@@ -47,7 +50,7 @@ const HomeView = () => {
     if (e.target.value) {
       setSpace(e.target.value)
       const selectedItem = items.filter(item => item.name === e.target.value)
-      updateBreadcrumb([
+      setBreadcrumb([
         {
           drive_id: selectedItem[0].id,
           name: selectedItem[0].name,
@@ -59,7 +62,7 @@ const HomeView = () => {
 
   const handleBreadcrumbPress = e => {
     const index = breadcrumb.findIndex(b => b.name === e.target.dataset.value)
-    updateBreadcrumb([...breadcrumb.slice(0, index + 1)])
+    setBreadcrumb([...breadcrumb.slice(0, index + 1)])
   }
 
   // TODO: The progress bar should be split into individual components for easier maintenance
@@ -128,10 +131,10 @@ const HomeView = () => {
           </Select>
         </div>
         <div className="flex flex-grow pt-4">
-          <File />
+          <AppFile breadcrumb={breadcrumb} setBreadcrumb={setBreadcrumb} />
         </div>
       </div>
-      <BottomStatus spaceInfo={spaceInfo} />
+      <AppBottomStatus spaceInfo={spaceInfo} />
     </div>
   )
 }

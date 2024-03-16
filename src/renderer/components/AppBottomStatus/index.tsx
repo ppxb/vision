@@ -6,7 +6,7 @@ interface Props {
   spaceInfo: APP.AppSpaceInfo
 }
 
-const BottomStatus = ({ spaceInfo }: Props) => {
+const AppBottomStatus = ({ spaceInfo }: Props) => {
   const spaceUsedProgressLabel = () => {
     const { used_size, total_size } = spaceInfo.personal_space_info
     const usedRatio = (used_size / total_size) * 100
@@ -21,12 +21,13 @@ const BottomStatus = ({ spaceInfo }: Props) => {
         </div>
         <Progress
           size="sm"
+          aria-label="space info"
           value={
             (spaceInfo.personal_space_info.used_size /
               spaceInfo.personal_space_info.total_size) *
             100
           }
-          className="w-[220px]"
+          className="w-[240px]"
           classNames={{ indicator: '!bg-green-500' }}
         />
         <div className="flex gap-4">
@@ -44,4 +45,4 @@ const BottomStatus = ({ spaceInfo }: Props) => {
   )
 }
 
-export default BottomStatus
+export default AppBottomStatus

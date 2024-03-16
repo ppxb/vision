@@ -9,18 +9,15 @@ import {
   fetchQRCode,
   fetchQRCodeStatus
 } from '@renderer/utils/oauth'
-import { fetchDriveInfo, fetchSpaceInfo } from '@renderer/utils/user'
-import { CheckIcon, ReloadIcon } from '@renderer/components/icon'
+import { CheckIcon, ReloadIcon } from '@renderer/components/AppIcon'
 
 const LoginView = () => {
   const [qrCode, setQRCode] = useState('')
   const [qrStatus, setQRStatus] = useState('')
-  const [hasToken, setHasToken] = useState(false)
+  const [isReady, setIsReady] = useState(false)
 
   const updateShowNavbar = useAppStore.use.updateShowNavbar()
   const updateToken = useAppStore.use.updateToken()
-  const updateUserInfo = useAppStore.use.updateUserInfo()
-  const updateSpaceInfo = useAppStore.use.updateSpaceInfo()
 
   const navigate = useNavigate()
 
@@ -57,23 +54,11 @@ const LoginView = () => {
         grant_type: 'authorization_code',
         code
       })
-      setHasToken(true)
-      updateToken(data)
-      await initApp()
-    } catch (error) {
-      return Promise.reject(error)
-    }
-  }
-
-  const initApp = async () => {
-    try {
-      const drive = await fetchDriveInfo()
-      const space = await fetchSpaceInfo()
-      updateUserInfo(drive)
-      updateSpaceInfo(space)
+      setIsReady(true)
+      updateToken({ ...data, refresh_token_created_at: Date.now() })
       setTimeout(() => {
         updateShowNavbar(true)
-        navigate('/home', { state: 'home' })
+        navigate('/')
       }, 3000)
     } catch (error) {
       return Promise.reject(error)
@@ -88,7 +73,7 @@ const LoginView = () => {
     <div className="w-screen h-screen absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 flex flex-col items-center justify-center gap-6">
       <motion.div
         animate={
-          hasToken ? { scale: 2, translateY: 180 } : { scale: 1, translateY: 0 }
+          isReady ? { scale: 2, translateY: 180 } : { scale: 1, translateY: 0 }
         }
         transition={{
           duration: 0.5,
@@ -101,7 +86,7 @@ const LoginView = () => {
       </motion.div>
       <motion.div
         animate={
-          hasToken
+          isReady
             ? { opacity: 0, translateY: '100%' }
             : { opacity: 1, translateY: '0' }
         }
@@ -155,7 +140,7 @@ const LoginView = () => {
       </motion.div>
       <motion.div
         animate={
-          hasToken
+          isReady
             ? {
                 opacity: 1,
                 translateY: -120,
